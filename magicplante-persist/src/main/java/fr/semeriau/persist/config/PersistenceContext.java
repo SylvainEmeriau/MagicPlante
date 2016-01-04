@@ -24,7 +24,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @PropertySource("classpath:application-persist.properties")
 public class PersistenceContext {
 	@Bean(destroyMethod = "close")
-	DataSource dataSource(Environment env) {
+	public DataSource dataSource(Environment env) {
 		HikariConfig hc = new HikariConfig();
 		hc.setDriverClassName(env.getRequiredProperty("db.driver"));
 		hc.setJdbcUrl(env.getRequiredProperty("db.url"));
@@ -34,11 +34,11 @@ public class PersistenceContext {
 	}
 
 	@Bean
-	LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Environment env) {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Environment env) {
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactoryBean.setDataSource(dataSource);
 		entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-		entityManagerFactoryBean.setPackagesToScan("fr.jjouenne");
+		entityManagerFactoryBean.setPackagesToScan("fr.semeriau.persist.entities");
 
 		Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
@@ -51,7 +51,7 @@ public class PersistenceContext {
 	}
 
 	@Bean
-	JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+	public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(entityManagerFactory);
 		return transactionManager;
